@@ -1,5 +1,6 @@
 package com.study.querydsl;
 
+import static com.study.querydsl.entity.QMember.member;
 import static org.assertj.core.api.Assertions.*;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -55,12 +56,11 @@ class QuerydslBasicTest {
     @Test
     public void startQuerydsl() {
         //member1을 찾아라.
-        queryFactory = new JPAQueryFactory(em);
-        QMember m = new QMember("m");
+        // QMember m = QMember.member;
         Member findMember = queryFactory
-                .select(m)
-                .from(m)
-                .where(m.username.eq("member1"))//파라미터 바인딩 처리
+                .select(member)
+                .from(member)
+                .where(member.username.eq("member1"))//파라미터 바인딩 처리
                 .fetchOne();
         assertThat(findMember.getUsername()).isEqualTo("member1");
     }
