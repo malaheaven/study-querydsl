@@ -3,6 +3,8 @@ package com.study.querydsl;
 import static com.study.querydsl.entity.QMember.member;
 import static org.assertj.core.api.Assertions.*;
 
+import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.querydsl.entity.Member;
 import com.study.querydsl.entity.QMember;
@@ -86,6 +88,43 @@ class QuerydslBasicTest {
                         member.age.eq(10))
                 .fetch();
         assertThat(result1.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void resultFetch() {
+        //List
+        List<Member> fetch = queryFactory
+                .selectFrom(member)
+                .fetch();
+        //단 건
+        Member findMember1 = queryFactory
+                .selectFrom(member)
+                .fetchOne();
+        //처음 한 건 조회
+        Member findMember2 = queryFactory
+                .selectFrom(member)
+                .fetchFirst();
+
+        //페이징 정보 포함, total count 쿼리 추가 실행 이제는(미지원) 하지만 아직 사라지지 않음
+        QueryResults<Member> results = queryFactory
+                .selectFrom(member)
+                .fetchResults();
+
+        long total = results.getTotal();
+
+        //이제는(미지원) count 쿼리로 변경
+        long count = queryFactory
+                .selectFrom(member)
+                .fetchCount();
+        
+        //현재
+        Long totalCount = queryFactory
+                .select(member.count()) // count(*) -> Wildcard.count, member.count() -> count(member.id)
+                .from(member)
+                .fetchOne();
+
+
+      
     }
 
 
